@@ -4,7 +4,9 @@ services:
   discord-bot:
     build: .
     container_name: discord-bot
-    restart: always
-    environment:
-      - DISCORD_TOKEN=${DISCORD_TOKEN}
-      - WEBHOOK_URL=${WEBHOOK_URL}
+    env_file:
+      - .env              # โหลดค่าตัวแปรจากไฟล์ .env
+    restart: unless-stopped
+    volumes:
+      - .:/app            # ให้ container เห็น source code ปัจจุบัน (สะดวกตอน dev)
+    tty: true
