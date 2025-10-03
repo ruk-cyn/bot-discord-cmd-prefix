@@ -1,6 +1,15 @@
+import os
+from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 from discord.ui import Button, View, Modal, TextInput
+
+# โหลดไฟล์ .env
+load_dotenv()
+
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+if not DISCORD_TOKEN:
+    raise ValueError("โปรดตั้งค่า environment variable DISCORD_TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -15,7 +24,7 @@ class FeedbackModal(Modal):
     def __init__(self):
         super().__init__(title="📋 ฟอร์ม Feedback")
 
-        # สร้าง TextInput 2 ช่อง
+        # TextInput 2 ช่อง
         self.name = TextInput(
             label="ชื่อของคุณ",
             placeholder="กรอกชื่อที่นี่",
@@ -27,14 +36,13 @@ class FeedbackModal(Modal):
         self.feedback = TextInput(
             label="ความคิดเห็น",
             placeholder="กรอกความคิดเห็นของคุณ",
-            style=discord.TextStyle.paragraph,  # multi-line
+            style=discord.TextStyle.paragraph,
             required=True,
             max_length=500
         )
         self.add_item(self.feedback)
 
     async def on_submit(self, interaction: discord.Interaction):
-        # เมื่อ submit ให้ตอบกลับ
         await interaction.response.send_message(
             f"ขอบคุณ {self.name.value}! เราได้รับ Feedback ของคุณแล้ว:\n{self.feedback.value}",
             ephemeral=True
@@ -55,4 +63,4 @@ async def feedback(ctx):
 
     await ctx.send("กดปุ่มด้านล่างเพื่อกรอกฟอร์ม Feedback:", view=view)
 
-bot.run("MTQxNTk0MzI5MzMyMTM1MTE5OA.GYaKf1.a6t5qq5yVykCTVZ87XR5wk5hNxUSn3CGKrVUco")
+bot.run(DISCORD_TOKEN)
