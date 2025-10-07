@@ -2,9 +2,11 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands, tasks
+from discord.ui import Button, View 
 import aiohttp
 import json
 from datetime import datetime
+
 
 # โหลดไฟล์ .env
 load_dotenv()
