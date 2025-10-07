@@ -124,24 +124,32 @@ async def fetch_orders(channel, author_name="ระบบอัตโนมั�
                 picking_id = order_item.get("picking_id", "ไม่ระบุ")
                 names = order_item.get("names", [])
                 link = order_item.get("link")
+                state = order_item.get("state", "ไม่ระบุ")
+
+                # รายการสินค้า
                 names_list = "\n".join([f"- {name}" for name in names]) if names else "ไม่มีสินค้า"
 
+                # Embed
                 embed = discord.Embed(
                     title=f"📦 คำสั่งซื้อ {picking_id}",
-                    description=f"**สินค้า:**\n{names_list}",
-                    color=discord.Color.blue()
+                    description=f"**สินค้า:**\n{names_list}\n\n**สถานะ:** `{state}`",
+                    color=discord.Color.green() if state == "assigned" else discord.Color.blue()
                 )
                 embed.set_footer(text=f"เรียกโดย: {author_name}")
 
+                # ปุ่ม Print เฉพาะเมื่อ state == assigned และมีลิงก์
                 view = None
-                if link:
-                    from discord.ui import Button, View
+                if state == "assigned" and link:
                     view = View()
-                    print_button = Button(label="🖨️ Print", style=discord.ButtonStyle.link, url=link)
+                    print_button = Button(
+                        label="🖨️ Print",
+                        style=discord.ButtonStyle.link,
+                        url=link
+                    )
                     view.add_item(print_button)
 
                 await channel.send(embed=embed, view=view)
-
+                
 # -----------------------------
 # คำสั่ง !order
 # -----------------------------
