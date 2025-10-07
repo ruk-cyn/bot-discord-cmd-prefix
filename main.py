@@ -128,13 +128,21 @@ async def fetch_orders(channel, author_name="ระบบอัตโนมั�
                 link = order_item.get("link")
                 state = order_item.get("state", "ไม่ระบุ")
 
+                # แปลง state เป็นข้อความสำหรับแสดง
+                if state in ["confirmed", "waiting"]:
+                    state_display = "รอ"
+                elif state == "assigned":
+                    state_display = "พร้อม"
+                else:
+                    state_display = "ไม่ระบุ"
+
                 # รายการสินค้า
                 names_list = "\n".join([f"- {name}" for name in names]) if names else "ไม่มีสินค้า"
 
                 # Embed
                 embed = discord.Embed(
                     title=f"📦 คำสั่งซื้อ {picking_id}",
-                    description=f"**สินค้า:**\n{names_list}\n\n**สถานะ:** `{state}`",
+                    description=f"**สินค้า:**\n{names_list}\n\n**สถานะ:** `{state_display}`",
                     color=discord.Color.green() if state == "assigned" else discord.Color.blue()
                 )
                 embed.set_footer(text=f"เรียกโดย: {author_name}")
